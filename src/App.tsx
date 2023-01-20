@@ -1,21 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-
-async function callApi<T = any>({ url, method }: { url: string; method: string; }) {
-  const res = await fetch(url, { method });
-  const json = await res?.json();
-
-
-  if (!res.ok) {
-    const errorMessage =  {
-      statusText: res.statusText,
-      json
-    };
-    throw errorMessage;
-  }
-
-  return json as T;
-}
+import { handleCallAPI } from './util/fetcher';
 
 function App() {
   const [fetchResult, setFetchResult] = useState<string[]>([]);
@@ -24,69 +9,25 @@ function App() {
       <>
         <button
             className="button-with-margin"
-            onClick={async () => {
-              try {
-                const json = await callApi<{ messages: string }>({
-                  url: '/test',
-                  method: 'post'
-                });
-
-                setFetchResult([...fetchResult, JSON.stringify(json.messages)]);
-              } catch (e) {
-                console.log('e', e);
-              }
-            }}
+            onClick={handleCallAPI('post', fetchResult, setFetchResult)}
         >
           post test
         </button>
         <button
             className="button-with-margin"
-            onClick={async () => {
-              try {
-                const json = await callApi<{ messages: string }>({
-                  url: '/test',
-                  method: 'get'
-                });
-
-                setFetchResult([...fetchResult, JSON.stringify(json.messages)]);
-              } catch (e) {
-                console.log('e', e);
-              }
-            }}
+            onClick={handleCallAPI('get', fetchResult, setFetchResult)}
         >
           get test
         </button>
         <button
             className="button-with-margin"
-            onClick={async () => {
-              try {
-                const json = await callApi<{ messages: string }>({
-                  url: '/test',
-                  method: 'put'
-                });
-
-                setFetchResult([...fetchResult, JSON.stringify(json.messages)]);
-              } catch (e) {
-                console.log('e', e);
-              }
-            }}
+            onClick={handleCallAPI('put', fetchResult, setFetchResult)}
         >
           put test
         </button>
         <button
             className="button-with-margin"
-            onClick={async () => {
-              try {
-                const json = await callApi<{ messages: string }>({
-                  url: '/test',
-                  method: 'delete'
-                });
-
-                setFetchResult([...fetchResult, JSON.stringify(json.messages)]);
-              } catch (e) {
-                console.log('e', e);
-              }
-            }}
+            onClick={handleCallAPI('delete', fetchResult, setFetchResult)}
         >
           delete test
         </button>
