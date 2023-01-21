@@ -9,14 +9,14 @@ const Post = () => {
   const queryClient = useQueryClient();
 
   const [Title, setTitle] = useState<string>('');
-  const [Tages, setTages] = useState<string>('');
+  const [Tags, setTags] = useState<string>('');
 
   // 등록 처리
   const { mutate } = useMutation(postTodo, {
     onSuccess: () => {
       queryClient.invalidateQueries('todos');
       setTitle('');
-      setTages('');
+      setTags('');
     },
     onError: (err: any) => {
       console.error(err);
@@ -28,7 +28,7 @@ const Post = () => {
 
     mutate({
       title: Title,
-      tags: Tages,
+      tags: Tags,
     })
   }
 
@@ -37,7 +37,7 @@ const Post = () => {
       <div className='inner'>
         <Styled.Form onSubmit={handleMutate}>
           <Input type='text' placeholder='Things to do' value={Title} onInput={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
-          <Input type='text' placeholder='Tag' value={Tages} onInput={(e: ChangeEvent<HTMLInputElement>) => setTages(e.target.value)} />
+          <Input type='text' placeholder='Tag' value={Tags} onInput={(e: ChangeEvent<HTMLInputElement>) => setTags(e.target.value)} />
           <Button className='add'>Add Todo</Button>
         </Styled.Form>
       </div>
