@@ -15,8 +15,10 @@ const createStore = () => {
       }
     },
     async length() {
-      const length = (await _todoStore.length()).toString().padStart(6, '0');
-      return length;
+      const lastKey = await _todoStore.key(await _todoStore.length() - 1);
+      const newKey = parseInt(lastKey) + 1;
+      const stringKey = newKey.toString().padStart(6, '0');
+      return stringKey;
     },
     async addTodo(id: string, todo: Todo) {
       await _todoStore.setItem(id, todo);
@@ -28,6 +30,10 @@ const createStore = () => {
     },
     async getTodo(id: string) {
       return (await _todoStore.getItem(id)) as Todo | null;
+    },
+    async removeTodo(id: string) {
+      await _todoStore.removeItem(id);
+      return true;
     },
     async getTodos(offset: number, limit: number) {
       const keys = await _todoStore.keys();

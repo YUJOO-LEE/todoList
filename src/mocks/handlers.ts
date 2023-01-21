@@ -16,7 +16,7 @@ export const handlers = [
       const limit = getNumberValueFromURLSearchParams({
         searchParams: req.url.searchParams,
         key: 'limit',
-        defaultValue: 12,
+        defaultValue: 10,
       });
       
       const { data, total } = await todoStore.getTodos(offset, limit);
@@ -62,13 +62,12 @@ export const handlers = [
     }
   }),
   rest.delete('/api/todo', async (req, res, ctx) => {
-    console.log(req);
-    // try {
-    //   await todoStore.removeTodo(id);
-    //   return res(ctx.status(201));
-    // } catch {
-    //   return res(ctx.status(400), ctx.json({ message: 'error' }));
-    // }
+    const id = req.url.searchParams.get('id');
+    if (!id) {
+      return res(ctx.status(400), ctx.json({ message: 'error' }));
+    }
+    await todoStore.removeTodo(id);
+    return res(ctx.status(201));
   }),
     // rest.get('/test', (req, res, ctx) => {
     //   return res(

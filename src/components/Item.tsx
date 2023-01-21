@@ -1,8 +1,8 @@
-import { ChangeEventHandler } from 'react';
+import { ChangeEventHandler, MouseEventHandler } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { Todo } from '../mocks/types/todo';
-import { patchTodo } from '../util/fetcher';
+import { deleteTodo, patchTodo } from '../util/fetcher';
 import Button from './Styled/Button';
 import Checkbox from './Styled/CheckBox';
 import Tages from './Tags';
@@ -10,19 +10,26 @@ import Tages from './Tags';
 const Item = ({id, isCompleted, title, tags}: Todo) => {
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation(patchTodo, {
+  const { mutate: toggleCompleted } = useMutation(patchTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('todos');
+    },
+  });
+
+  const { mutate: deleteTask } = useMutation(deleteTodo, {
     onSuccess: () => {
       queryClient.invalidateQueries('todos');
     },
   });
 
   const handleComplete: ChangeEventHandler<HTMLInputElement> = (e) => {
-    mutate({
-      id,
-      isCompleted: e.target.checked
-    })
+    toggleCompleted({ id, isCompleted: e.target.checked });
   }
   
+  const handleDelete: MouseEventHandler<HTMLButtonElement> = () => {
+    deleteTask({ id });
+  }
+
   return (
     <Styled.Wrap>
       <Styled.Item>
@@ -31,7 +38,7 @@ const Item = ({id, isCompleted, title, tags}: Todo) => {
           {title}
         </span>
         <Button className='edit'>Edit</Button>
-        <Button className='delete'>Delete</Button>
+        <Button className='delete' onClick={handleDelete}>Delete</Button>
       </Styled.Item>
       {tags.trim() && 
         <Tages tags={tags} />

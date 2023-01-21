@@ -19,7 +19,7 @@ const Post = () => {
       setTages('');
     },
     onError: (err: any) => {
-      console.log('실패했습니다');
+      console.error(err);
     }
   });
 

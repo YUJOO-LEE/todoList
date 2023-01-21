@@ -19,8 +19,9 @@ export const patchTodo = (payload: PatchPayload) => {
 }
 
 // 완료 처리
-export const deleteTodo = (payload: { id: string }) => {
-  return axios.delete('/api/todo', { params: payload });
+export const deleteTodo = ({ id = '' }) => {
+  const params = { id };
+  return axios.delete('/api/todo', { params });
 }
 
 export async function callApi<T = any>({ url, method }: { url: string; method: string; }) {

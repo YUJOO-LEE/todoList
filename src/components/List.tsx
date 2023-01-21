@@ -20,10 +20,10 @@ const List = () => {
 
   // 다음 데이터 호출
   useEffect(() => {
-    if (!fetchMoreRef.current || !Intersecting || !isSuccess || isLoading || !hasNextPage || isFetchingNextPage) return;
+    if (!Intersecting || !isSuccess || isLoading || !hasNextPage || isFetchingNextPage) return;
 
     fetchNextPage();
-  }, [Intersecting])
+  }, [Intersecting, isSuccess])
 
   return (
     <Styled.List>
@@ -42,7 +42,7 @@ const List = () => {
           ))}
         </Styled.ListBody>
         <Styled.FetchMore ref={fetchMoreRef} />
-        {!data?.pages[0].data.total && <NoTaskMsg />}
+        {!data?.pages[0].data.total && <NoTaskMsg /> }
       </div>
     </Styled.List>
   )
