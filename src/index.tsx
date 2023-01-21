@@ -1,24 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GlobalStyle } from './components/Styled/GlobalStyle';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import initializeMockupWorker from './mocks';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 60 * 24,
+      staleTime: 1000 * 60,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  }
+});
 
 initializeMockupWorker().then(() => {
   ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
   ).render(
-    <React.StrictMode>
+    <React.Fragment>
       <QueryClientProvider client={queryClient}>
         <GlobalStyle />
         <App />
       </QueryClientProvider>
-    </React.StrictMode>
+    </React.Fragment>
   );
 })
 

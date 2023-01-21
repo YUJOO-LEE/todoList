@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
@@ -9,18 +10,18 @@ import Item from './Item';
 import NoTaskMsg from './NoTaskMsg';
 
 const List = () => {
+  const fetchMoreRef = useRef<HTMLDivElement>(null);
+  const Intersecting = useIntersecting(fetchMoreRef);
 
   // 리스트 불러오기
   const { data, isSuccess, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(['todos'], getTodos, {
     getNextPageParam: (lastPage) => lastPage.data.paging.next,
   });
 
-  const fetchMoreRef = useRef<HTMLDivElement>(null);
-  const Intersecting = useIntersecting(fetchMoreRef, isSuccess);
-
   // 다음 데이터 호출
   useEffect(() => {
-    if (!Intersecting || !isSuccess || isLoading || !hasNextPage || isFetchingNextPage) return;
+    if (!fetchMoreRef.current || !Intersecting || !isSuccess || isLoading || !hasNextPage || isFetchingNextPage) return;
+
     fetchNextPage();
   }, [Intersecting])
 
@@ -33,17 +34,15 @@ const List = () => {
           </Styled.TotalCount>
           <Filter />
         </Styled.ListHeader>
-        {data?.pages[0].data.total ?
-          <Styled.ListBody>
-            {data.pages?.map((page) => (
-              page.data.todos.map((item: Todo) => (
-                <Item key={item.id} {...item} />
-              ))
-            ))}
-          </Styled.ListBody>
-          : <NoTaskMsg />
-          }
+        <Styled.ListBody>
+          {data?.pages.map((page) => (
+            page.data.todos.map((item: Todo) => (
+              <Item key={item.id} {...item} />
+            ))
+          ))}
+        </Styled.ListBody>
         <Styled.FetchMore ref={fetchMoreRef} />
+        {!data?.pages[0].data.total && <NoTaskMsg />}
       </div>
     </Styled.List>
   )

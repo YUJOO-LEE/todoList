@@ -1,4 +1,3 @@
-import './App.css';
 import Header from './components/Header';
 import List from './components/List';
 import Post from './components/Post';

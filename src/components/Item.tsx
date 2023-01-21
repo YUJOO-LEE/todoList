@@ -1,21 +1,41 @@
+import { ChangeEventHandler } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { Todo } from '../mocks/types/todo';
+import { patchTodo } from '../util/fetcher';
 import Button from './Styled/Button';
 import Checkbox from './Styled/CheckBox';
 import Tages from './Tags';
 
-const Item = ({title, tags}: Todo) => {
+const Item = ({id, isCompleted, title, tags}: Todo) => {
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation(patchTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('todos');
+    },
+  });
+
+  const handleComplete: ChangeEventHandler<HTMLInputElement> = (e) => {
+    mutate({
+      id,
+      isCompleted: e.target.checked
+    })
+  }
+  
   return (
     <Styled.Wrap>
       <Styled.Item>
-        <Checkbox type='checkbox' />
+        <Checkbox type='checkbox' checked={isCompleted} onChange={handleComplete} />
         <span>
           {title}
         </span>
         <Button className='edit'>Edit</Button>
         <Button className='delete'>Delete</Button>
       </Styled.Item>
-      <Tages tags={tags} />
+      {tags.trim() && 
+        <Tages tags={tags} />
+      }
     </Styled.Wrap>
   )
 }

@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 
-const useIntersecting = (targetRef: RefObject<HTMLElement>, isSuccess: boolean) => {
+const useIntersecting = (targetRef: RefObject<HTMLElement>) => {
   const observerRef = useRef<IntersectionObserver>();
   const [Intersecting, setIntersecting] = useState(false);
 
@@ -12,16 +13,16 @@ const useIntersecting = (targetRef: RefObject<HTMLElement>, isSuccess: boolean) 
       });
     }
     return observerRef.current;
-  }, []);
+  }, [observerRef.current]);
 
   // 옵저버 실행
   useEffect(()=>{
     if (targetRef.current) {
       getObserver().observe(targetRef.current);
     }
-  }, [getObserver, targetRef]);
+  }, [targetRef.current]);
 
-  return isSuccess && Intersecting;
+  return Intersecting;
 }
 
 export default useIntersecting;
