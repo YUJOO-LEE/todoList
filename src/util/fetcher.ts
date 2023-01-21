@@ -1,4 +1,16 @@
+import axios from 'axios';
 import { Dispatch, SetStateAction } from "react";
+import { Payload } from "../mocks/types/todo";
+
+// 리스트 조회
+export const getTodos = () => {
+  return axios.get('/api/todo');
+}
+
+// 신규 저장
+export const postTodo = (payload: Payload) => {
+  return axios.post('/api/todo', payload);
+}
 
 export async function callApi<T = any>({ url, method }: { url: string; method: string; }) {
   const res = await fetch(url, { method });

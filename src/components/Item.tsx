@@ -1,20 +1,21 @@
 import styled from 'styled-components';
+import { Todo } from '../mocks/types/todo';
 import Button from './Styled/Button';
 import Checkbox from './Styled/CheckBox';
 import Tages from './Tags';
 
-const Item = () => {
+const Item = ({title, tags}: Todo) => {
   return (
     <Styled.Wrap>
       <Styled.Item>
         <Checkbox type='checkbox' />
         <span>
-          Item
+          {title}
         </span>
         <Button className='edit'>Edit</Button>
         <Button className='delete'>Delete</Button>
       </Styled.Item>
-      <Tages />
+      <Tages tags={tags} />
     </Styled.Wrap>
   )
 }

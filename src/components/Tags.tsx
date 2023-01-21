@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
 
-const Tages = () => {
+const Tages = ({ tags }: { tags: string }) => {
+  const tagsArr = tags.split(',');
+
   return (
     <Styled.TagList>
-      <Styled.TagItem>@Tag1</Styled.TagItem>
-      <Styled.TagItem>@Tag2</Styled.TagItem>
-      <Styled.TagItem>@Tag3</Styled.TagItem>
+      {tagsArr.map(v => (
+        <Styled.TagItem key={v}>{v}</Styled.TagItem>
+      ))}
     </Styled.TagList>
   )
 }
