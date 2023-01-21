@@ -1,3 +1,4 @@
+import { getNumberValueFromURLSearchParams } from './util/queryString';
 import { rest } from 'msw';
 import { todoStore } from './data/service';
 import type { Todo, Payload } from './types/todo';
@@ -7,10 +8,27 @@ import type { Todo, Payload } from './types/todo';
 export const handlers = [
   rest.get('/api/todo', async (req, res, ctx) => {
     try {
+      const offset = getNumberValueFromURLSearchParams({
+        searchParams: req.url.searchParams,
+        key: 'offset',
+        defaultValue: 0,
+      });
+      const limit = getNumberValueFromURLSearchParams({
+        searchParams: req.url.searchParams,
+        key: 'limit',
+        defaultValue: 5,
+      });
       
-      const todos = await todoStore.getTodos();
+      const { data, total } = await todoStore.getTodos(offset, limit);
 
-      return res(ctx.status(200), ctx.json({ todos }));
+      return res(ctx.status(200), ctx.json({
+        total,
+        todos: data,
+        paging: {
+          next: offset + limit,
+          total,
+        },
+      }));
     } catch {
       return res(ctx.status(400), ctx.json({ message: 'no task' }));
     }

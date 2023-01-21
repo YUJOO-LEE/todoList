@@ -15,7 +15,7 @@ const createStore = () => {
       }
     },
     async length() {
-      const length = (await _todoStore.length()).toString();
+      const length = (await _todoStore.length()).toString().padStart(6, '0');
       return length;
     },
     async addTodo(id: string, todo: Todo) {
@@ -29,9 +29,15 @@ const createStore = () => {
     async getTodo(id: string) {
       return (await _todoStore.getItem(id)) as Todo | null;
     },
-    async getTodos() {
+    async getTodos(offset: number, limit: number) {
       const keys = await _todoStore.keys();
-      return (await Promise.all(keys.map((key) => _todoStore.getItem(key)))) as Todo[];
+
+      const allTodos: Todo[] = ((await Promise.all(keys.map((key) => _todoStore.getItem(key)))).filter((v) => v !== null) as Todo[]);
+
+      return {
+        data: allTodos.reverse().slice(offset, offset + limit),
+        total: allTodos.length,
+      };
     },
   };
 };

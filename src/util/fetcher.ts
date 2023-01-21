@@ -3,8 +3,9 @@ import { Dispatch, SetStateAction } from "react";
 import { Payload } from "../mocks/types/todo";
 
 // 리스트 조회
-export const getTodos = () => {
-  return axios.get('/api/todo');
+export const getTodos = ({ pageParam = 0}) => {
+  const params = { offset: pageParam };
+  return axios.get('/api/todo', { params });
 }
 
 // 신규 저장
