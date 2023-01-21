@@ -1,7 +1,7 @@
 import { getNumberValueFromURLSearchParams } from './util/queryString';
 import { rest } from 'msw';
 import { todoStore } from './data/service';
-import type { Todo, AddPayload } from './types/todo';
+import type { Todo, AddPayload, PutPayload } from './types/todo';
 
 //const data = { messages: [] as string[] };
 
@@ -37,11 +37,29 @@ export const handlers = [
     const body: AddPayload = await req.json();
     try {
       const curDate = new Date();
-      const id = await todoStore.length();
+      const id = await todoStore.getNewKey();
       const todo: Todo = Object.assign(body, { id, createAt: curDate, updateAt: curDate, isCompleted: false });
 
       await todoStore.addTodo(id, todo);
       return res(ctx.status(201));
+    } catch {
+      return res(ctx.status(400), ctx.json({ message: 'error' }));
+    }
+  }),
+  rest.put('/api/todo', async (req, res, ctx) => {
+    const body: PutPayload = await req.json();
+    try {
+      const curDate = new Date();
+      const prevData = await todoStore.getTodo(body.id);
+
+      if (!prevData) {
+        return res(ctx.status(400), ctx.json({ message: 'error' }));
+      }
+
+      const todo: Todo = Object.assign(prevData, body, { updateAt: curDate })
+
+      await todoStore.setTodo(body.id, todo);
+      return res(ctx.status(201), ctx.json({ todo }));
     } catch {
       return res(ctx.status(400), ctx.json({ message: 'error' }));
     }

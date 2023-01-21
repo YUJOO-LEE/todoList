@@ -14,7 +14,7 @@ const createStore = () => {
           });
       }
     },
-    async length() {
+    async getNewKey() {
       const lastKey = await _todoStore.key(await _todoStore.length() - 1);
       const newKey = parseInt(lastKey) + 1;
       const stringKey = newKey.toString().padStart(6, '0');

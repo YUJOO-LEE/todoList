@@ -8,4 +8,9 @@ export type PatchPayload = {
   isCompleted: boolean;
 };
 
+export type PutPayload = {
+  id: string;
+  isCompleted: boolean;
+} & AddPayload;
+
 export type Todo = AddPayload & { id: string; createAt: Date; updateAt: Date; isCompleted: boolean };
