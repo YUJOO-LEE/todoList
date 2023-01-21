@@ -8,6 +8,7 @@ import { getTodos } from '../util/fetcher';
 import Filter from './Filter';
 import Item from './Item';
 import NoTaskMsg from './NoTaskMsg';
+import Button from './Styled/Button';
 
 const List = () => {
   const fetchMoreRef = useRef<HTMLDivElement>(null);
@@ -21,9 +22,10 @@ const List = () => {
   // 다음 데이터 호출
   useEffect(() => {
     if (!Intersecting || !isSuccess || isLoading || !hasNextPage || isFetchingNextPage) return;
-
     fetchNextPage();
-  }, [Intersecting, isSuccess])
+  }, [Intersecting]);
+
+  console.log(hasNextPage);
 
   return (
     <Styled.List>
@@ -35,14 +37,16 @@ const List = () => {
           <Filter />
         </Styled.ListHeader>
         <Styled.ListBody>
-          {data?.pages.map((page) => (
+          {isSuccess && data.pages.map((page) => (
             page.data.todos.map((item: Todo) => (
               <Item key={item.id} {...item} />
             ))
           ))}
         </Styled.ListBody>
+        {hasNextPage &&
+          <Button onClick={()=>fetchNextPage()} className='viewMore'>View more</Button>}
         <Styled.FetchMore ref={fetchMoreRef} />
-        {!data?.pages[0].data.total && <NoTaskMsg /> }
+        {(isSuccess && !data?.pages[0].data.total) && <NoTaskMsg /> }
       </div>
     </Styled.List>
   )

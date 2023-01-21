@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { Dispatch, SetStateAction } from "react";
 import { AddPayload, PatchPayload, PutPayload } from "../mocks/types/todo";
 
 // 리스트 조회
-export const getTodos = ({ pageParam = 0}) => {
+export const getTodos = ({ pageParam = 0 }) => {
   const params = { offset: pageParam };
   return axios.get('/api/todo', { params });
 }

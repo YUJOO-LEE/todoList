@@ -25,7 +25,7 @@ export const handlers = [
         total,
         todos: data,
         paging: {
-          next: offset + limit,
+          next: offset + limit <= total ? offset + limit : undefined,
           total,
         },
       }));

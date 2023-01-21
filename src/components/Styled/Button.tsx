@@ -41,5 +41,13 @@ const Styled = {
     &.yellow{
       background-color: #ffcc00;
     }
+
+    &.viewMore{
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #efefef;
+      font-size: 16px;
+    }
   `,
 }
