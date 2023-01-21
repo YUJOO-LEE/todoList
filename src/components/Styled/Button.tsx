@@ -34,12 +34,12 @@ const Styled = {
       }
     }
 
-    &.edit{
+    &.gray{
       background-color: #efefef;
     }
 
-    &.delete{
-      background-color: #efefef;
+    &.yellow{
+      background-color: #ffcc00;
     }
   `,
 }

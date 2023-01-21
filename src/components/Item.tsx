@@ -1,14 +1,18 @@
-import { ChangeEventHandler, MouseEventHandler } from 'react';
+import { ChangeEventHandler, MouseEventHandler, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { Todo } from '../mocks/types/todo';
 import { deleteTodo, patchTodo } from '../util/fetcher';
+import EditItem from './EditItem';
 import Button from './Styled/Button';
 import Checkbox from './Styled/CheckBox';
 import Tages from './Tags';
 
-const Item = ({id, isCompleted, title, tags}: Todo) => {
+const Item = (props: Todo) => {
+  const {id, isCompleted, title, tags} = props;
+
   const queryClient = useQueryClient();
+  const [IsEditMode, setIsEditMode] = useState(false);
 
   const { mutate: toggleCompleted } = useMutation(patchTodo, {
     onSuccess: () => {
@@ -32,17 +36,19 @@ const Item = ({id, isCompleted, title, tags}: Todo) => {
 
   return (
     <Styled.Wrap>
-      <Styled.Item>
-        <Checkbox type='checkbox' checked={isCompleted} onChange={handleComplete} />
-        <span>
-          {title}
-        </span>
-        <Button className='edit'>Edit</Button>
-        <Button className='delete' onClick={handleDelete}>Delete</Button>
-      </Styled.Item>
-      {tags.trim() && 
-        <Tages tags={tags} />
-      }
+      {!IsEditMode ?
+        <>
+          <Styled.Item>
+            <Checkbox type='checkbox' checked={isCompleted} onChange={handleComplete} />
+            <span>
+              {title}
+            </span>
+            <Button className='gray' onClick={() => setIsEditMode(true)}>Edit</Button>
+            <Button className='gray' onClick={handleDelete}>Delete</Button>
+          </Styled.Item>
+          {tags.trim() && <Tages tags={tags} /> }
+        </>
+      : <EditItem {...props} setIsEditMode={setIsEditMode} /> }
     </Styled.Wrap>
   )
 }
