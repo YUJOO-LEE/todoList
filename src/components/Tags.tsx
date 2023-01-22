@@ -1,14 +1,28 @@
+import { useQueryClient } from 'react-query';
 import styled from 'styled-components';
+import { Todo } from '../mocks/types/todo';
 
 
 const Tages = ({ tags }: { tags: string }) => {
   const tagsArr = tags.split(',');
+  const queryClient = useQueryClient();
+
+  // 리스트 불러오기
+  const { data } = queryClient.getQueryData<any>('tags');
 
   return (
     <Styled.TagList>
-      {tagsArr.map(v => (
-        <Styled.TagItem key={v}>@{v.slice(6)}</Styled.TagItem>
-      ))}
+      {tagsArr.map(v => {
+        const id = v.slice(0, 6);
+        const referTask: Todo = data.todos
+          .find((todos: Todo) => todos.id === id);
+
+        return (
+          <Styled.TagItem key={v} className={referTask.isCompleted ? 'completed' : undefined}>
+            @{v.slice(6)}
+          </Styled.TagItem>
+        )
+        })}
     </Styled.TagList>
   )
 }
@@ -27,5 +41,9 @@ const Styled = {
   `,
   TagItem: styled.li`
     font-size: 14px;
+    
+    &.completed{
+      text-decoration: line-through;
+    }
   `,
 }

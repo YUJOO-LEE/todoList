@@ -1,10 +1,12 @@
 import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
+import { ErrorKey } from '../asset/keys';
 import { postTodo } from '../util/fetcher';
 import SelectTag from './SelectTag';
 import Button from './Styled/Button';
 import Input from './Styled/Input';
+import { ErrorModal } from './Styled/Modal';
 
 const Post = () => {
   const queryClient = useQueryClient();
@@ -12,7 +14,8 @@ const Post = () => {
   const [Title, setTitle] = useState<string>('');
   const [Tags, setTags] = useState<string[]>([]);
   const [TitleEmpty, setTitleEmpty] = useState<boolean>(false);
-  const selectTag = useRef<{ setIsOpenOptions: (v: boolean) => void; }>(null);
+  const [IsModalShown, toggleModalShown] = useState<boolean>(false);
+  const selectTag = useRef<{ toggleOptions: (v: boolean) => void; }>(null);
 
   // 등록 처리
   const { mutate } = useMutation(postTodo, {
@@ -20,19 +23,21 @@ const Post = () => {
       queryClient.invalidateQueries('todos');
       setTitle('');
       setTags([]);
-      selectTag.current?.setIsOpenOptions(false);
+      selectTag.current?.toggleOptions(false);
     },
     onError: (err: any) => {
       console.error(err);
     }
   });
 
+  // 등록 버튼 이벤트
   const handleMutate: FormEventHandler = (e) => {
     e.preventDefault();
-
     if (!Title) {
-      return setTitleEmpty(true);
-    }
+      showModal();
+      setTitleEmpty(true);
+      return;
+    };
     
     mutate({
       title: Title,
@@ -40,11 +45,16 @@ const Post = () => {
     })
   }
 
+  // 에러 모달 출력
+  const showModal = () => {
+    toggleModalShown(true);
+  }
+
   return (
     <Styled.Post>
       <div className='inner'>
         <Styled.Form onSubmit={handleMutate}>
-          <Input type='text' placeholder='Things to do' 
+          <Input type='text' placeholder='작업 내용을 입력하세요' 
             className={TitleEmpty ? 'error' : undefined}
             value={Title} 
             onInput={(e: ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +67,7 @@ const Post = () => {
           <Button className='add'>Add Todo</Button>
         </Styled.Form>
       </div>
+      <ErrorModal show={IsModalShown} toggleShow={toggleModalShown} type={ErrorKey.TITLE} />
     </Styled.Post>
   )
 }

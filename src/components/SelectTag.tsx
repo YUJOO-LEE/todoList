@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useEffect, useImperativeHandle, useState } from 'react';
-import { useQuery } from 'react-query';
-import { getAllTodos } from '../util/fetcher';
+import { useQueryClient } from 'react-query';
 import { Todo } from '../mocks/types/todo';
 
 type Props = {
@@ -9,23 +8,25 @@ type Props = {
   setSelectedOptions: Dispatch<SetStateAction<string[]>>
 };
 
-type ImperativeHandle = { setIsOpenOptions: (v: boolean) => void; }
+type ImperativeHandle = { toggleOptions: (v: boolean) => void; }
 
 const SelectTag = forwardRef<ImperativeHandle, Props>(({ 
   SelectedOptions, setSelectedOptions
 }, ref) => {
-  const [IsOpenOptions, setIsOpenOptions] = useState<boolean>(false);
 
-  // 부모 컴포넌트에서 제어할 수 있도록 ref로 setIsOpenOptions 반환
+  const queryClient = useQueryClient();
+  const [IsOpenOptions, toggleOptions] = useState<boolean>(false);
+
+  // 부모 컴포넌트에서 제어할 수 있도록 ref로 toggleOptions 반환
   useImperativeHandle(
     ref,
     () => ({
-      setIsOpenOptions: (v: boolean) => setIsOpenOptions(v),
+      toggleOptions: (v: boolean) => toggleOptions(v),
     })
   )
 
-  // 태그 리스트 출력
-  const { data, refetch } = useQuery(['tags'], getAllTodos);
+  // 리스트 불러오기
+  const data = queryClient.getQueryData<any>('tags');
 
   // 체크박스 이벤트
   const OnSelect: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
@@ -44,14 +45,15 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
   // 옵션 열때마다 tag 리스트 갱신
   useEffect(() => {
     if (!IsOpenOptions) return;
-    refetch();
-  }, [IsOpenOptions, refetch])
+    
+    queryClient.invalidateQueries('tags');
+  }, [IsOpenOptions, queryClient])
 
   return (
     <Styled.Warpper>
-      <Styled.SelectDiv id='startup' tabIndex={6} 
-        className={IsOpenOptions ? 'on' : undefined}
-        onFocus={() => setIsOpenOptions(true)}>
+      <Styled.SelectDiv id='startup' tabIndex={0}
+        onFocus={() => toggleOptions(true)}
+        className={IsOpenOptions ? 'on' : undefined}>
         {!SelectedOptions.length
           ? '선택해주세요' 
           : SelectedOptions.map((option) => {
@@ -61,22 +63,27 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
         }
       </Styled.SelectDiv>
       <Styled.OptionsDiv className={IsOpenOptions ? 'on' : undefined}>
-        {data?.data.todos.map(({ title, id }: Todo) => (
-          <label key={'tags' + id}>
-            <input type='checkbox'
-              value={id + title}
-              onChange={OnSelect}
-              checked={SelectedOptions.includes(id + title)}
-            />
-            {title}
-          </label>
-        ))}
+        {data?.data.todos.map(({ title, id }: Todo) => {
+          const referTask: Todo = data.data.todos
+            .find((todos: Todo) => todos.id === id);
+
+          return (
+            <label key={'tags' + id} className={referTask.isCompleted ? 'completed' : undefined}>
+              <input type='checkbox'
+                value={id + title}
+                onChange={OnSelect}
+                checked={SelectedOptions.includes(id + title)}
+              />
+              {title}
+            </label>
+          );
+        })}
         {!data?.data.todos.length &&
           <p className='error'>No Tasks</p>
         }
       </Styled.OptionsDiv>
       <Styled.OpenButton
-        onClick={() => setIsOpenOptions(prev => !prev)}
+        onClick={() => toggleOptions(prev => !prev)}
         className={IsOpenOptions ? 'on' : undefined} />
   </Styled.Warpper>
   )
@@ -139,6 +146,10 @@ const Styled = {
       font-size: 14px;
       line-height: 2;
       color: #000;
+
+      &.completed{
+        text-decoration: line-through;
+      }
 
       input{
         margin-right: 10px;
