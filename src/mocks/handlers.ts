@@ -1,7 +1,7 @@
 import { getNumberValueFromURLSearchParams } from './util/queryString';
 import { rest } from 'msw';
 import { todoStore } from './data/service';
-import type { Todo, AddPayload, PutPayload } from './types/todo';
+import type { Todo, AddPayload, PutPayload, TodoFilters } from './types/todo';
 
 //const data = { messages: [] as string[] };
 
@@ -18,8 +18,9 @@ export const handlers = [
         key: 'limit',
         defaultValue: 10,
       });
+      const filter = req.url.searchParams.get('filter') as TodoFilters || 'all';
       
-      const { data, total } = await todoStore.getTodos(offset, limit);
+      const { data, total } = await todoStore.getTodos(offset, limit, filter);
 
       return res(ctx.status(200), ctx.json({
         total,

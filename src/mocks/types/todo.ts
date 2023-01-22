@@ -14,3 +14,5 @@ export type PutPayload = {
 } & AddPayload;
 
 export type Todo = AddPayload & { id: string; createAt: Date; updateAt: Date; isCompleted: boolean };
+
+export type TodoFilters = 'all' | 'active' | 'completed';

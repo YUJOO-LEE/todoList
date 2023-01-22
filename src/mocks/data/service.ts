@@ -1,5 +1,5 @@
 import localForage from 'localforage';
-import type { Todo } from '../types/todo';
+import type { Todo, TodoFilters } from '../types/todo';
 
 let _todoStore: LocalForage;
 
@@ -35,10 +35,13 @@ const createStore = () => {
       await _todoStore.removeItem(id);
       return true;
     },
-    async getTodos(offset: number, limit: number) {
+    async getTodos(offset: number, limit: number, filter: TodoFilters = 'all') {
       const keys = await _todoStore.keys();
+      const isCompleted = filter === 'completed';
 
-      const allTodos: Todo[] = ((await Promise.all(keys.map((key) => _todoStore.getItem(key)))).filter((v) => v !== null) as Todo[]);
+      const allTodos: Todo[] = ((await Promise.all(keys.map((key) => _todoStore.getItem(key)))).filter((v: any) => {
+        return filter === 'all' ? v !== null : (v !== null && v.isCompleted === isCompleted);
+      }) as Todo[]);
 
       return {
         data: allTodos.reverse().slice(offset, offset + limit),

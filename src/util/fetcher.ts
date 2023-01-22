@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { AddPayload, PatchPayload, PutPayload } from "../mocks/types/todo";
+import type { AddPayload, PatchPayload, PutPayload, TodoFilters } from "../mocks/types/todo";
 
 // 리스트 조회
-export const getTodos = ({ pageParam = 0 }) => {
-  const params = { offset: pageParam };
+export const getTodos = ({ pageParam = 0 }, filter: TodoFilters) => {
+  const params = { offset: pageParam, filter };
   return axios.get('/api/todo', { params });
 }
 

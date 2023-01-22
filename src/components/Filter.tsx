@@ -1,12 +1,34 @@
+import { Dispatch } from 'react';
 import styled from 'styled-components';
+import type { TodoFilters } from '../mocks/types/todo';
 import Button from './Styled/Button';
 
-const Filter = () => {
+const Filter = ({ 
+  setListFilter, ListFilter
+}: { 
+  setListFilter: Dispatch<React.SetStateAction<TodoFilters>>;
+  ListFilter: string
+}) => {
   return (
     <Styled.FilterList>
-      <li><Button className='filter selected'>All</Button></li>
-      <li><Button className='filter'>Active</Button></li>
-      <li><Button className='filter'>Completed</Button></li>
+      <li>
+        <Button className={`filter ${ListFilter === 'all' ? 'selected' : undefined}`} 
+          onClick={() => setListFilter('all')}>
+          All
+        </Button>
+        </li>
+      <li>
+        <Button className={`filter ${ListFilter === 'active' ? 'selected' : undefined}`} 
+          onClick={() => setListFilter('active')}>
+          Active
+        </Button>
+      </li>
+      <li>
+        <Button className={`filter ${ListFilter === 'completed' ? 'selected' : undefined}`} 
+          onClick={() => setListFilter('completed')}>
+          Completed
+        </Button>
+      </li>
     </Styled.FilterList>
   )
 }

@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
 import useIntersecting from '../hook/useIntersecting';
-import { Todo } from '../mocks/types/todo';
+import type { Todo, TodoFilters } from '../mocks/types/todo';
 import { getTodos } from '../util/fetcher';
 import Filter from './Filter';
 import Item from './Item';
@@ -13,9 +13,10 @@ import Button from './Styled/Button';
 const List = () => {
   const fetchMoreRef = useRef<HTMLDivElement>(null);
   const Intersecting = useIntersecting(fetchMoreRef);
+  const [ListFilter, setListFilter] = useState<TodoFilters>('all');
 
   // 리스트 불러오기
-  const { data, isSuccess, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } = useInfiniteQuery(['todos'], getTodos, {
+  const { data, isSuccess, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery(['todos'], ({ pageParam = 0 }) => getTodos({ pageParam }, ListFilter), {
     getNextPageParam: (lastPage) => lastPage.data.paging.next,
   });
 
@@ -25,7 +26,9 @@ const List = () => {
     fetchNextPage();
   }, [Intersecting]);
 
-  console.log(hasNextPage);
+  useEffect(() => {
+    refetch();
+  }, [ListFilter]);
 
   return (
     <Styled.List>
@@ -34,7 +37,7 @@ const List = () => {
           <Styled.TotalCount>
             {data?.pages[0].data.total} Tasks
           </Styled.TotalCount>
-          <Filter />
+          <Filter setListFilter={setListFilter} ListFilter={ListFilter} />
         </Styled.ListHeader>
         <Styled.ListBody>
           {isSuccess && data.pages.map((page) => (
