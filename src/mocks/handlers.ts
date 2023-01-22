@@ -85,6 +85,16 @@ export const handlers = [
     if (!id) {
       return res(ctx.status(400), ctx.json({ message: 'error' }));
     }
+    const curData = await todoStore.getTodo(id);
+    const { data } = await todoStore.getAllTodos();
+
+    data.map(async (item: Todo) => {
+      let newTags = item.tags.replace(curData!.id + curData!.title + ',', '');
+      newTags = newTags.replace(curData!.id + curData!.title, '');
+      const todo: Todo = Object.assign(item, { tags: newTags })
+      await todoStore.setTodo(item.id, todo);
+    });
+
     await todoStore.removeTodo(id);
     return res(ctx.status(201));
   }),
