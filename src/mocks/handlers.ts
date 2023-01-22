@@ -35,9 +35,9 @@ export const handlers = [
   rest.post('/api/todo', async (req, res, ctx) => {
     const body: AddPayload = await req.json();
     try {
-      const curDate = new Date();
+      const curDate = new Date().toISOString();
       const id = await todoStore.getNewKey();
-      const todo: Todo = Object.assign(body, { id, createAt: curDate, updateAt: curDate, isCompleted: false });
+      const todo: Todo = Object.assign(body, { id, createdAt: curDate, updatedAt: curDate, isCompleted: false });
 
       await todoStore.addTodo(id, todo);
       return res(ctx.status(201));
@@ -48,14 +48,14 @@ export const handlers = [
   rest.put('/api/todo', async (req, res, ctx) => {
     const body: PutPayload = await req.json();
     try {
-      const curDate = new Date();
       const prevData = await todoStore.getTodo(body.id);
 
       if (!prevData) {
         return res(ctx.status(400), ctx.json({ message: 'error' }));
       }
 
-      const todo: Todo = Object.assign(prevData, body, { updateAt: curDate })
+      const curDate = new Date().toISOString();
+      const todo: Todo = Object.assign(prevData, body, { updatedAt: curDate })
 
       await todoStore.setTodo(body.id, todo);
       return res(ctx.status(201), ctx.json({ todo }));
@@ -70,7 +70,8 @@ export const handlers = [
       if (!prevTodo) {
         return res(ctx.status(400), ctx.json({ message: 'No Item' }));
       }
-      const todo: Todo = Object.assign(prevTodo, { isCompleted })
+      const curDate = new Date().toISOString();
+      const todo: Todo = Object.assign(prevTodo, { isCompleted, updatedAt: curDate })
 
       await todoStore.setTodo(id, todo);
       return res(ctx.status(201), ctx.json({ todo }));
@@ -86,12 +87,12 @@ export const handlers = [
     const curData = await todoStore.getTodo(id);
     const { data } = await todoStore.getAllTodos();
 
-    data.map(async (item: Todo) => {
+    await Promise.all(data.map(async (item: Todo) => {
       let newTags = item.tags.replace(curData!.id + curData!.title + ',', '');
       newTags = newTags.replace(curData!.id + curData!.title, '');
       const todo: Todo = Object.assign(item, { tags: newTags })
-      await todoStore.setTodo(item.id, todo);
-    });
+      todoStore.setTodo(item.id, todo);
+    }));
 
     await todoStore.removeTodo(id);
     return res(ctx.status(201));
