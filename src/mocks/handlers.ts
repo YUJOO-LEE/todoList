@@ -42,7 +42,7 @@ export const handlers = [
       const id = await todoStore.getNewKey();
       const todo: Todo = Object.assign(body, { id, createdAt: curDate, updatedAt: curDate, isCompleted: false });
 
-      await todoStore.addTodo(id, todo);
+      await todoStore.setTodo(id, todo);
       return res(ctx.status(201));
     } catch {
       return res(ctx.status(400), ctx.json({ message: 'error' }));
