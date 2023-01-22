@@ -92,7 +92,7 @@ const EditItem = ({
         <Button className='yellow' onClick={handleEdit}>Edit</Button>
       </Styled.Item>
       <Styled.Tags>
-        <SelectTag SelectedOptions={Tags} setSelectedOptions={setTags} ref={selectTag} />
+        <SelectTag SelectedOptions={Tags} setSelectedOptions={setTags} editItemId={id} ref={selectTag} />
         <ErrorModal show={IsModalShown} toggleShow={toggleModalShown} type={ErrorMsg} />
       </Styled.Tags>
     </>

@@ -1,18 +1,19 @@
 import styled from 'styled-components';
-import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useImperativeHandle, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import { ResAllData, Todo } from '../mocks/types/todo';
 import { QueryKey } from '../asset/keys';
 
 type Props = {
-  SelectedOptions: string[], 
-  setSelectedOptions: Dispatch<SetStateAction<string[]>>
+  SelectedOptions: string[];
+  setSelectedOptions: Dispatch<SetStateAction<string[]>>;
+  editItemId?: string;
 };
 
 type ImperativeHandle = { toggleOptions: (v: boolean) => void; }
 
 const SelectTag = forwardRef<ImperativeHandle, Props>(({ 
-  SelectedOptions, setSelectedOptions
+  SelectedOptions, setSelectedOptions, editItemId
 }, ref) => {
 
   const queryClient = useQueryClient();
@@ -43,13 +44,6 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
     setSelectedOptions(newSelectedOptions);
   }, [SelectedOptions, setSelectedOptions]);
 
-  // 옵션 열때마다 tag 리스트 갱신
-  useEffect(() => {
-    if (!IsOpenOptions) return;
-    
-    queryClient.invalidateQueries('tags');
-  }, [IsOpenOptions, queryClient])
-
   return (
     <Styled.Warpper>
       <Styled.SelectDiv id='startup' tabIndex={0}
@@ -64,7 +58,9 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
         }
       </Styled.SelectDiv>
       <Styled.OptionsDiv className={IsOpenOptions ? 'on' : undefined}>
-        {data?.data.todos.map(({ title, id }: Todo) => {
+        {data?.data.todos
+          .filter(({ tags }: Todo) => !editItemId || !tags.includes(editItemId))
+          .map(({ title, id }: Todo) => {
           const referTask = data.data.todos
             .find((todos: Todo) => todos.id === id);
 
