@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { ChangeEventHandler, MouseEventHandler, useCallback, useState } from 'react';
+import { ChangeEventHandler, Dispatch, MouseEventHandler, useCallback, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { ErrorKey, QueryKey } from '../asset/keys';
@@ -11,11 +11,12 @@ import Checkbox from './Styled/CheckBox';
 import { ErrorModal } from './Styled/Modal';
 import Tages from './Tags';
 
-const Item = (props: Todo) => {
-  const {id, isCompleted, title, tags} = props;
+const Item = (props: 
+  Todo & { EditMode: [boolean, string]; setEditMode: Dispatch<React.SetStateAction<[boolean, string]>> }
+) => {
 
+  const { id, isCompleted, title, tags, EditMode, setEditMode } = props;
   const queryClient = useQueryClient();
-  const [IsEditMode, toggleEditMode] = useState<boolean>(false);
   const [IsModalShown, toggleModalShown] = useState<boolean>(false);
 
   // 태그 리스트 불러오기
@@ -60,19 +61,19 @@ const Item = (props: Todo) => {
 
   return (
     <Styled.Wrap>
-      {!IsEditMode ?
+      {!(EditMode[0] && EditMode[1] === id) ?
         <>
           <Styled.Item>
             <Checkbox type='checkbox' checked={isCompleted} onChange={handleComplete} />
             <span>
               {title}
             </span>
-            <Button className='gray' onClick={() => toggleEditMode(true)}>Edit</Button>
+            <Button className='gray' onClick={() => setEditMode([true, id])}>Edit</Button>
             <Button className='gray' onClick={handleDelete}>Delete</Button>
           </Styled.Item>
           {tags.trim() && <Tages tags={tags} /> }
         </>
-      : <EditItem {...props} toggleEditMode={toggleEditMode} /> }
+      : <EditItem {...props} /> }
       <ErrorModal show={IsModalShown} toggleShow={toggleModalShown} type={ErrorKey.NOT_COMPLETED} />
     </Styled.Wrap>
   )

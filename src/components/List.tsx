@@ -15,6 +15,7 @@ const List = () => {
   const fetchMoreRef = useRef<HTMLDivElement>(null);
   const Intersecting = useIntersecting(fetchMoreRef);
   const [ListFilter, setListFilter] = useState<TodoFilters>('all');
+  const [EditMode, setEditMode] = useState<[boolean, string]>([false, '']);
 
   // 리스트 불러오기
   const { 
@@ -49,7 +50,7 @@ const List = () => {
         <Styled.ListBody>
           {isSuccess && data.pages.map((page) => (
             page.data.todos.map((item: Todo) => (
-              <Item key={item.id} {...item} />
+              <Item key={item.id} {...item} setEditMode={setEditMode} EditMode={EditMode} />
             ))
           ))}
         </Styled.ListBody>

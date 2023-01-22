@@ -3,8 +3,6 @@ import { rest } from 'msw';
 import { todoStore } from './data/service';
 import type { Todo, AddPayload, PutPayload, TodoFilters, ResPagingData, ResAllData } from './types/todo';
 
-//const data = { messages: [] as string[] };
-
 export const handlers = [
   rest.get('/api/todo', async (req, res, ctx) => {
     try {

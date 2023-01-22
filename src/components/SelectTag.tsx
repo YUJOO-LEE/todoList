@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useImperativeHandle, useState } from 'react';
+import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import { ResAllData, Todo } from '../mocks/types/todo';
 import { QueryKey } from '../asset/keys';
@@ -43,6 +43,10 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
 
     setSelectedOptions(newSelectedOptions);
   }, [SelectedOptions, setSelectedOptions]);
+
+  useEffect(() => {
+    queryClient.invalidateQueries();
+  }, [queryClient])
 
   return (
     <Styled.Warpper>
@@ -129,6 +133,7 @@ const Styled = {
     padding: 15px;
     position: absolute;
     left: -1px;
+    z-index: 1;
     background-color: #fff;
     border: 1px solid #eee;
     border-radius: 0 0 5px 5px;
