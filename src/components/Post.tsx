@@ -1,7 +1,8 @@
-import { ChangeEvent, FormEventHandler, useState } from 'react';
+import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { postTodo } from '../util/fetcher';
+import SelectTag from './SelectTag';
 import Button from './Styled/Button';
 import Input from './Styled/Input';
 
@@ -9,14 +10,17 @@ const Post = () => {
   const queryClient = useQueryClient();
 
   const [Title, setTitle] = useState<string>('');
-  const [Tags, setTags] = useState<string>('');
+  const [Tags, setTags] = useState<string[]>([]);
+  const [TitleEmpty, setTitleEmpty] = useState<boolean>(false);
+  const selectTag = useRef<{ setIsOpenOptions: (v: boolean) => void; }>(null);
 
   // 등록 처리
   const { mutate } = useMutation(postTodo, {
     onSuccess: () => {
       queryClient.invalidateQueries('todos');
       setTitle('');
-      setTags('');
+      setTags([]);
+      selectTag.current?.setIsOpenOptions(false);
     },
     onError: (err: any) => {
       console.error(err);
@@ -26,9 +30,13 @@ const Post = () => {
   const handleMutate: FormEventHandler = (e) => {
     e.preventDefault();
 
+    if (!Title) {
+      return setTitleEmpty(true);
+    }
+    
     mutate({
       title: Title,
-      tags: Tags,
+      tags: Tags.join(','),
     })
   }
 
@@ -36,8 +44,14 @@ const Post = () => {
     <Styled.Post>
       <div className='inner'>
         <Styled.Form onSubmit={handleMutate}>
-          <Input type='text' placeholder='Things to do' value={Title} onInput={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
-          <Input type='text' placeholder='Tag' value={Tags} onInput={(e: ChangeEvent<HTMLInputElement>) => setTags(e.target.value)} />
+          <Input type='text' placeholder='Things to do' 
+            className={TitleEmpty ? 'error' : undefined}
+            value={Title} 
+            onInput={(e: ChangeEvent<HTMLInputElement>) => {
+              !e.target.value ? setTitleEmpty(true) : setTitleEmpty(false);
+              setTitle(e.target.value)}
+            } />
+          <SelectTag SelectedOptions={Tags} setSelectedOptions={setTags} ref={selectTag} />
           <Button className='add'>Add Todo</Button>
         </Styled.Form>
       </div>
@@ -59,7 +73,7 @@ const Styled = {
     justify-content: space-between;
     gap: 10px;
 
-    input:first-of-type{
+    input[type=text]:first-of-type{
       flex: 1;
     }
   `,

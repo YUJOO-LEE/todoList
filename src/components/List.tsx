@@ -26,6 +26,7 @@ const List = () => {
     fetchNextPage();
   }, [Intersecting]);
 
+  // 필터 변경 시 refetch
   useEffect(() => {
     refetch();
   }, [ListFilter]);
