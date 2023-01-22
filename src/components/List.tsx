@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
-import { QueryKey } from '../asset/keys';
+import { QueryKey } from '../util/keys';
 import useIntersecting from '../hook/useIntersecting';
 import type { Todo, TodoFilters } from '../mocks/types/todo';
 import { getTodos } from '../util/fetcher';

@@ -1,6 +1,6 @@
 import { useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { QueryKey } from '../asset/keys';
+import { QueryKey } from '../util/keys';
 import { ResAllData, Todo } from '../mocks/types/todo';
 
 

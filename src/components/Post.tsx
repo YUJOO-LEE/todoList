@@ -2,7 +2,7 @@
 import { ChangeEvent, FormEventHandler, useCallback, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { ErrorKey, QueryKey } from '../asset/keys';
+import { ErrorKey, QueryKey } from '../util/keys';
 import { postTodo } from '../util/fetcher';
 import SelectTag from './SelectTag';
 import Button from './Styled/Button';

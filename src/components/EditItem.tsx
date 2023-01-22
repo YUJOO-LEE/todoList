@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, MouseEventHandler, useCallback, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { ErrorKey, QueryKey } from '../asset/keys';
+import { ErrorKey, QueryKey } from '../util/keys';
 import { ResAllData, Todo } from '../mocks/types/todo';
 import { putTodo } from '../util/fetcher';
 import SelectTag from './SelectTag';

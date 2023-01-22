@@ -2,7 +2,7 @@
 import { ChangeEventHandler, Dispatch, MouseEventHandler, useCallback, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { ErrorKey, QueryKey } from '../asset/keys';
+import { ErrorKey, QueryKey } from '../util/keys';
 import { ResAllData, Todo } from '../mocks/types/todo';
 import dataFormat from '../util/dateFormat';
 import { deleteTodo, patchTodo } from '../util/fetcher';
