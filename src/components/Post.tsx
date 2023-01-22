@@ -71,6 +71,7 @@ const Styled = {
   Form: styled.form`
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     gap: 10px;
 
     input[type=text]:first-of-type{

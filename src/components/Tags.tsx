@@ -7,7 +7,7 @@ const Tages = ({ tags }: { tags: string }) => {
   return (
     <Styled.TagList>
       {tagsArr.map(v => (
-        <Styled.TagItem key={v}>{v}</Styled.TagItem>
+        <Styled.TagItem key={v}>@{v.slice(6)}</Styled.TagItem>
       ))}
     </Styled.TagList>
   )
@@ -20,6 +20,7 @@ const Styled = {
     margin: 10px 0 0 30px;
     padding: 10px;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     background-color: #f6f6f6;
     border-radius: 5px;

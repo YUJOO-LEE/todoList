@@ -16,6 +16,7 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
 }, ref) => {
   const [IsOpenOptions, setIsOpenOptions] = useState<boolean>(false);
 
+  // 부모 컴포넌트에서 제어할 수 있도록 ref로 setIsOpenOptions 반환
   useImperativeHandle(
     ref,
     () => ({
@@ -91,14 +92,13 @@ const Styled = {
     position: relative;
   `,
   SelectDiv: styled.div`
-    min-width: 320px;
-    max-width: 500px;
+    width: 320px;
     position: relative;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 5px;
-    padding: 10px;
+    padding: 8px;
     border-radius: 5px;
     font-size: 16px;
     line-height: 28px;
@@ -123,13 +123,13 @@ const Styled = {
   OptionsDiv: styled.div`
     width: 322px;
     max-height: 200px;
+    display: none;
     overflow-y: auto;
     padding: 15px;
     position: absolute;
     left: -1px;
     background-color: #fff;
     border: 1px solid #eee;
-    border-top: 0;
     border-radius: 0 0 5px 5px;
 
     label{
@@ -163,7 +163,7 @@ const Styled = {
     height: 28px;
     display: inline-block;
     position: absolute;
-    top: 10px;
+    top: 8px;
     right: 0;
     z-index: 1;
     background-color: #fff;
