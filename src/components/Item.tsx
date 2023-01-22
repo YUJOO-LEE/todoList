@@ -1,8 +1,9 @@
-import { ChangeEventHandler, MouseEventHandler, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { ChangeEventHandler, MouseEventHandler, useCallback, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { ErrorKey, QueryKey } from '../asset/keys';
-import { Todo } from '../mocks/types/todo';
+import { ResAllData, Todo } from '../mocks/types/todo';
 import { deleteTodo, patchTodo } from '../util/fetcher';
 import EditItem from './EditItem';
 import Button from './Styled/Button';
@@ -17,8 +18,8 @@ const Item = (props: Todo) => {
   const [IsEditMode, toggleEditMode] = useState<boolean>(false);
   const [IsModalShown, toggleModalShown] = useState<boolean>(false);
 
-  // 리스트 불러오기
-  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS);
+  // 태그 리스트 불러오기
+  const { data } = queryClient.getQueryData(QueryKey.TAGS) as {data: ResAllData};
 
   // 완료 데이터 patch
   const { mutate: toggleCompleted } = useMutation(patchTodo, {
@@ -39,7 +40,7 @@ const Item = (props: Todo) => {
   const handleComplete: ChangeEventHandler<HTMLInputElement> = (e) => {
     const arr = tags ? tags.split(',').filter((v: string) => {
       const id = v.slice(0, 6);
-      const referTask: Todo = data.todos.find((todos: Todo) => todos.id === id);
+      const referTask = data.todos.find((todos: Todo) => todos.id === id);
       return !referTask?.isCompleted;
     }) : [];
     
@@ -48,14 +49,14 @@ const Item = (props: Todo) => {
   }
   
   // 삭제 버튼 이벤트
-  const handleDelete: MouseEventHandler<HTMLButtonElement> = () => {
+  const handleDelete: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
     deleteTask({ id });
-  }
+  }, []);
 
   // 에러 모달 출력
-  const showModal = () => {
+  const showModal = useCallback(() => {
     toggleModalShown(true);
-  }
+  }, []);
 
   return (
     <Styled.Wrap>

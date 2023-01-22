@@ -1,7 +1,7 @@
 import { getNumberValueFromURLSearchParams } from './util/queryString';
 import { rest } from 'msw';
 import { todoStore } from './data/service';
-import type { Todo, AddPayload, PutPayload, TodoFilters } from './types/todo';
+import type { Todo, AddPayload, PutPayload, TodoFilters, ResPagingData, ResAllData } from './types/todo';
 
 //const data = { messages: [] as string[] };
 
@@ -22,7 +22,7 @@ export const handlers = [
       
       const { data, total } = await todoStore.getTodos(offset, limit, filter);
 
-      return res(ctx.status(200), ctx.json({
+      return res(ctx.status(200), ctx.json<ResPagingData>({
         total,
         todos: data,
         paging: {
@@ -92,7 +92,7 @@ export const handlers = [
     try {
       const { data, total } = await todoStore.getAllTodos();
 
-      return res(ctx.status(200), ctx.json({
+      return res(ctx.status(200), ctx.json<ResAllData>({
         total,
         todos: data,
       }));

@@ -1,7 +1,7 @@
 import { useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { QueryKey } from '../asset/keys';
-import { Todo } from '../mocks/types/todo';
+import { ResAllData, Todo } from '../mocks/types/todo';
 
 
 const Tages = ({ tags }: { tags: string }) => {
@@ -9,17 +9,17 @@ const Tages = ({ tags }: { tags: string }) => {
   const queryClient = useQueryClient();
 
   // 태그 리스트 불러오기
-  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS);
+  const { data } = queryClient.getQueryData(QueryKey.TAGS) as {data: ResAllData};
 
   return (
     <Styled.TagList>
       {tagsArr.map(v => {
         const id = v.slice(0, 6);
-        const referTask: Todo = data.todos
+        const referTask = data.todos
           .find((todos: Todo) => todos.id === id);
 
         return (
-          <Styled.TagItem key={v} className={referTask.isCompleted ? 'completed' : undefined}>
+          <Styled.TagItem key={v} className={referTask?.isCompleted ? 'completed' : undefined}>
             @{v.slice(6)}
           </Styled.TagItem>
         )

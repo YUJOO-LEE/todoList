@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { ChangeEvent, FormEventHandler, useCallback, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { ErrorKey, QueryKey } from '../asset/keys';
@@ -31,7 +32,7 @@ const Post = () => {
   });
 
   // 등록 버튼 이벤트
-  const handleMutate: FormEventHandler = (e) => {
+  const handleMutate: FormEventHandler = useCallback((e) => {
     e.preventDefault();
     if (!Title) {
       showModal();
@@ -43,12 +44,12 @@ const Post = () => {
       title: Title,
       tags: Tags.join(','),
     })
-  }
+  }, [Tags, Title]);
 
   // 에러 모달 출력
-  const showModal = () => {
+  const showModal = useCallback(() => {
     toggleModalShown(true);
-  }
+  }, []);
 
   return (
     <Styled.Post>

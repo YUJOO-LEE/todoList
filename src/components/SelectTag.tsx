@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { Todo } from '../mocks/types/todo';
+import { ResAllData, Todo } from '../mocks/types/todo';
 import { QueryKey } from '../asset/keys';
 
 type Props = {
@@ -26,8 +26,8 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
     })
   )
 
-  // 리스트 불러오기
-  const data = queryClient.getQueryData<any>(QueryKey.TAGS);
+  // 태그 리스트 불러오기
+  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS) as {data: ResAllData};
 
   // 체크박스 이벤트
   const OnSelect: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
@@ -64,12 +64,12 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
         }
       </Styled.SelectDiv>
       <Styled.OptionsDiv className={IsOpenOptions ? 'on' : undefined}>
-        {data?.data.todos.map(({ title, id }: Todo) => {
-          const referTask: Todo = data.data.todos
+        {data.todos.map(({ title, id }: Todo) => {
+          const referTask = data.todos
             .find((todos: Todo) => todos.id === id);
 
           return (
-            <label key={'tags' + id} className={referTask.isCompleted ? 'completed' : undefined}>
+            <label key={'tags' + id} className={referTask?.isCompleted ? 'completed' : undefined}>
               <input type='checkbox'
                 value={id + title}
                 onChange={OnSelect}
@@ -79,7 +79,7 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
             </label>
           );
         })}
-        {!data?.data.todos.length &&
+        {!data.todos.length &&
           <p className='error'>No Tasks</p>
         }
       </Styled.OptionsDiv>

@@ -1,8 +1,8 @@
-import { ChangeEvent, Dispatch, MouseEventHandler, useRef, useState } from 'react';
+import { ChangeEvent, Dispatch, MouseEventHandler, useCallback, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { ErrorKey, QueryKey } from '../asset/keys';
-import { Todo } from '../mocks/types/todo';
+import { ResAllData, Todo } from '../mocks/types/todo';
 import { putTodo } from '../util/fetcher';
 import SelectTag from './SelectTag';
 import Button from './Styled/Button';
@@ -25,7 +25,7 @@ const EditItem = ({
   const selectTag = useRef<{ toggleOptions: (v: boolean) => void; }>(null);
 
   // 태그용 리스트 불러오기
-  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS);
+  const { data } = queryClient.getQueryData(QueryKey.TAGS) as {data: ResAllData};
 
   // 업데이트 처리
   const { mutate: updateTodo } = useMutation(putTodo, {
@@ -49,7 +49,7 @@ const EditItem = ({
     // 참조 리스트 완료되었는지 확인
     const arr = tags ? tags.split(',').filter((v: string) => {
       const id = v.slice(0, 6);
-      const referTask: Todo = data.todos.find((todos: Todo) => todos.id === id);
+      const referTask = data.todos.find((todos: Todo) => todos.id === id);
       return !referTask?.isCompleted;
     }) : [];
 
@@ -66,12 +66,12 @@ const EditItem = ({
       title: Title,
       tags: Tags.join(','),
      });
-  }
+  };
 
   // 에러 모달 출력
-  const showModal = () => {
+  const showModal = useCallback(() => {
     toggleModalShown(true);
-  }
+  }, []);
 
   return (
     <>
