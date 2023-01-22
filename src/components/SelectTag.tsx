@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from 'styled-components';
 import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { useQueryClient } from 'react-query';
@@ -29,6 +30,8 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
 
   // 태그 리스트 불러오기
   const data = queryClient.getQueryData(QueryKey.TAGS) as {data: ResAllData};
+  const filteredList = data?.data.todos
+    .filter(({ tags, id }: Todo) => !editItemId || (id !== editItemId && !tags.includes(editItemId)));
 
   // 체크박스 이벤트
   const OnSelect: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
@@ -44,9 +47,12 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
     setSelectedOptions(newSelectedOptions);
   }, [SelectedOptions, setSelectedOptions]);
 
+  // 옵션 오픈 시 마다 리스트 갱신
   useEffect(() => {
-    queryClient.invalidateQueries();
-  }, [queryClient])
+    if (!IsOpenOptions) return;
+
+    queryClient.invalidateQueries(QueryKey.TAGS);
+  }, [IsOpenOptions])
 
   return (
     <Styled.Warpper>
@@ -62,25 +68,24 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
         }
       </Styled.SelectDiv>
       <Styled.OptionsDiv className={IsOpenOptions ? 'on' : undefined}>
-        {data?.data.todos
-          .filter(({ tags }: Todo) => !editItemId || !tags.includes(editItemId))
-          .map(({ title, id }: Todo) => {
-          const referTask = data.data.todos
-            .find((todos: Todo) => todos.id === id);
+        {filteredList?.map(({ title, id }: Todo) => {
+            const referTask = data.data.todos
+              .find((todos: Todo) => todos.id === id);
 
-          return (
-            <label key={'tags' + id} className={referTask?.isCompleted ? 'completed' : undefined}>
-              <input type='checkbox'
-                value={id + title}
-                onChange={OnSelect}
-                checked={SelectedOptions.includes(id + title)}
-              />
-              {title}
-            </label>
-          );
-        })}
-        {!data?.data.todos.length &&
-          <p className='error'>No Tasks</p>
+            return (
+              <label key={'tags' + id} className={referTask?.isCompleted ? 'completed' : undefined}>
+                <input type='checkbox'
+                  value={id + title}
+                  onChange={OnSelect}
+                  checked={SelectedOptions.includes(id + title)}
+                />
+                {title}
+              </label>
+            );
+          }
+        )}
+        {!filteredList?.length &&
+          <p className='error'>참조할 수 있는 작업이 없습니다</p>
         }
       </Styled.OptionsDiv>
       <Styled.OpenButton
