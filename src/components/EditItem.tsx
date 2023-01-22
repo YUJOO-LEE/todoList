@@ -12,8 +12,9 @@ import { ErrorModal } from './Styled/Modal';
 // import Tages from './Tags';
 
 const EditItem = ({
-  id, isCompleted, title, tags, toggleEditMode
-}: Todo & { toggleEditMode: Dispatch<React.SetStateAction<boolean>> }
+  id, isCompleted, title, tags, EditMode, setEditMode
+}: 
+  Todo & { EditMode: [boolean, string]; setEditMode: Dispatch<React.SetStateAction<[boolean, string]>> }
 ) => {
   const queryClient = useQueryClient();
   const [IsCompleted, toggleCompleted] = useState(isCompleted);
@@ -32,7 +33,7 @@ const EditItem = ({
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKey.TODOS);
       queryClient.invalidateQueries(QueryKey.TAGS);
-      toggleEditMode(false);
+      setEditMode([false, '']);
     },
   });
 
@@ -48,13 +49,13 @@ const EditItem = ({
 
     // 작업 완료 체크 시 참조 리스트 완료되었는지 확인
     if (IsCompleted) {
-      const arr = tags ? tags.split(',').filter((v: string) => {
+      const arr = Tags.length ? Tags.filter((v: string) => {
         const id = v.slice(0, 6);
         const referTask = data.todos.find((todos: Todo) => todos.id === id);
         return !referTask?.isCompleted;
       }) : [];
 
-      if (tags && arr.length) {
+      if (Tags.length && arr.length) {
         setErrorMsg(ErrorKey.NOT_COMPLETED);
         showModal();
         return;
@@ -88,7 +89,7 @@ const EditItem = ({
             !e.target.value ? setTitleEmpty(true) : setTitleEmpty(false);
             setTitle(e.target.value);
           }} />
-        <Button className='gray' onClick={() => toggleEditMode(false)}>Cancel</Button>
+        <Button className='gray' onClick={() => setEditMode([false, ''])}>Cancel</Button>
         <Button className='yellow' onClick={handleEdit}>Edit</Button>
       </Styled.Item>
       <Styled.Tags>
