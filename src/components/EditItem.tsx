@@ -46,18 +46,20 @@ const EditItem = ({
       return;
     };
 
-    // 참조 리스트 완료되었는지 확인
-    const arr = tags ? tags.split(',').filter((v: string) => {
-      const id = v.slice(0, 6);
-      const referTask = data.todos.find((todos: Todo) => todos.id === id);
-      return !referTask?.isCompleted;
-    }) : [];
+    // 작업 완료 체크 시 참조 리스트 완료되었는지 확인
+    if (IsCompleted) {
+      const arr = tags ? tags.split(',').filter((v: string) => {
+        const id = v.slice(0, 6);
+        const referTask = data.todos.find((todos: Todo) => todos.id === id);
+        return !referTask?.isCompleted;
+      }) : [];
 
-    if (tags && arr.length) {
-      setErrorMsg(ErrorKey.NOT_COMPLETED);
-      showModal();
-      return;
-    };
+      if (tags && arr.length) {
+        setErrorMsg(ErrorKey.NOT_COMPLETED);
+        showModal();
+        return;
+      };
+    }
 
     // 업데이트 실행
     updateTodo({ 
