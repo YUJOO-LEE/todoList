@@ -54,7 +54,7 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
         onFocus={() => toggleOptions(true)}
         className={IsOpenOptions ? 'on' : undefined}>
         {!SelectedOptions.length
-          ? '선택해주세요' 
+          ? '참조할 작업을 선택하세요' 
           : SelectedOptions.map((option) => {
             const id = parseInt(option.slice(0, 6));
             return <span key={'selectedTags' + id}>{id}</span>;
@@ -109,6 +109,7 @@ const Styled = {
     line-height: 28px;
     background-color: #fff;
     color: #888;
+    cursor: pointer;
 
     span{
       flex: 0 0 auto;
