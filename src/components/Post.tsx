@@ -22,6 +22,7 @@ const Post = () => {
   const { mutate } = useMutation(postTodo, {
     onSuccess: () => {
       queryClient.invalidateQueries(QueryKey.TODOS);
+      queryClient.invalidateQueries(QueryKey.TAGS);
       setTitle('');
       setTags([]);
       selectTag.current?.toggleOptions(false);
