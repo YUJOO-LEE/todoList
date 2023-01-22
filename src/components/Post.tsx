@@ -66,7 +66,7 @@ const Post = () => {
           <Styled.Tags>
             <SelectTag SelectedOptions={Tags} setSelectedOptions={setTags} ref={selectTag} />
           </Styled.Tags>
-          <Button className='add'>Add Todo</Button>
+          <Button className='add yellow'>Add Todo</Button>
         </Styled.Form>
       </div>
       <ErrorModal show={IsModalShown} toggleShow={toggleModalShown} type={ErrorKey.TITLE} />

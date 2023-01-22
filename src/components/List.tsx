@@ -55,7 +55,7 @@ const List = () => {
           ))}
         </Styled.ListBody>
         {hasNextPage &&
-          <Button onClick={()=>fetchNextPage()} className='viewMore'>View more</Button>}
+          <Button onClick={()=>fetchNextPage()} className='viewMore gray'>View more</Button>}
         <Styled.FetchMore ref={fetchMoreRef} />
         {(isSuccess && !data?.pages[0].data.total) && <NoTaskMsg /> }
       </div>

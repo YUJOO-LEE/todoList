@@ -20,10 +20,20 @@ const Styled = {
     background-color: transparent;
     cursor: pointer;
 
-    &.add{
-      padding: 10px;
+
+    &.gray{
+      background-color: #efefef;
+    }
+
+    &.yellow{
       background-color: #ffcc00;
+    }
+
+    &.add{
+      height: 44px;
+      padding: 10px;
       font-size: 16px;
+      line-height: 24px;
     }
 
     &.filter{
@@ -34,19 +44,10 @@ const Styled = {
       }
     }
 
-    &.gray{
-      background-color: #efefef;
-    }
-
-    &.yellow{
-      background-color: #ffcc00;
-    }
-
     &.viewMore{
       width: 100%;
       padding: 10px;
       margin-top: 10px;
-      background-color: #efefef;
       font-size: 16px;
     }
   `,
