@@ -27,7 +27,7 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
   )
 
   // 태그 리스트 불러오기
-  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS) as {data: ResAllData};
+  const data = queryClient.getQueryData(QueryKey.TAGS) as {data: ResAllData};
 
   // 체크박스 이벤트
   const OnSelect: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
@@ -64,8 +64,8 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
         }
       </Styled.SelectDiv>
       <Styled.OptionsDiv className={IsOpenOptions ? 'on' : undefined}>
-        {data.todos.map(({ title, id }: Todo) => {
-          const referTask = data.todos
+        {data?.data.todos.map(({ title, id }: Todo) => {
+          const referTask = data.data.todos
             .find((todos: Todo) => todos.id === id);
 
           return (
@@ -79,7 +79,7 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
             </label>
           );
         })}
-        {!data.todos.length &&
+        {!data?.data.todos.length &&
           <p className='error'>No Tasks</p>
         }
       </Styled.OptionsDiv>
