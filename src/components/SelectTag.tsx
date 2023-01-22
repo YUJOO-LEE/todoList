@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { useQuery } from 'react-query';
-import { getTodos } from '../util/fetcher';
+import { getAllTodos } from '../util/fetcher';
 import { Todo } from '../mocks/types/todo';
 
 type Props = {
@@ -25,10 +25,7 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
   )
 
   // 태그 리스트 출력
-  const { data, refetch } = useQuery(
-    ['tags'], 
-    () => getTodos({}, 'all')
-  );
+  const { data, refetch } = useQuery(['tags'], getAllTodos);
 
   // 체크박스 이벤트
   const OnSelect: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
@@ -92,7 +89,7 @@ const Styled = {
     position: relative;
   `,
   SelectDiv: styled.div`
-    width: 320px;
+    width: 100%;
     position: relative;
     display: flex;
     align-items: center;
@@ -121,7 +118,7 @@ const Styled = {
     }
   `,
   OptionsDiv: styled.div`
-    width: 322px;
+    width: calc(100% + 2px);
     max-height: 200px;
     display: none;
     overflow-y: auto;

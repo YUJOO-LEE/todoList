@@ -48,6 +48,15 @@ const createStore = () => {
         total: allTodos.length,
       };
     },
+    async getAllTodos() {
+      const keys = await _todoStore.keys();
+      const allTodos: Todo[] = ((await Promise.all(keys.map((key) => _todoStore.getItem(key)))).filter((v: any) =>  v !== null) as Todo[]);
+
+      return {
+        data: allTodos.reverse(),
+        total: allTodos.length,
+      };
+    },
   };
 };
 

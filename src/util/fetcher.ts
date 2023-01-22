@@ -27,3 +27,8 @@ export const deleteTodo = ({ id = '' }) => {
 export const putTodo = (payload: PutPayload) => {
   return axios.put('/api/todo', payload);
 }
+
+// 모든 리스트 조회 (태그 리스트 출력용)
+export const getAllTodos = () => {
+  return axios.get('/api/todo/all');
+}

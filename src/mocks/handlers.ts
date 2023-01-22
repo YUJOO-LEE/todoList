@@ -88,43 +88,16 @@ export const handlers = [
     await todoStore.removeTodo(id);
     return res(ctx.status(201));
   }),
-    // rest.get('/test', (req, res, ctx) => {
-    //   return res(
-    //     ctx.status(200),
-    //     ctx.json({
-    //         messages: data.messages
-    //     }),
-    //   );
-    // }),
-    // rest.post('/test', (req, res, ctx) => {
-    //   const newMessage = `message(${Date.now()})`;
+  rest.get('/api/todo/all', async (req, res, ctx) => {
+    try {
+      const { data, total } = await todoStore.getAllTodos();
 
-    //   data.messages.push(newMessage);
-
-    //   return res(
-    //     ctx.status(200),
-    //     ctx.json({
-    //       messages: newMessage
-    //     }),
-    //   );
-    // }),
-    // rest.put('/test', (req, res, ctx) => {
-
-    //   return res(
-    //     ctx.status(200),
-    //     ctx.json({
-    //       messages: 'put!!!'
-    //     }),
-    //   );
-    // }),
-    // rest.delete('/test', (req, res, ctx) => {
-    //   data.messages = [];
-
-    //   return res(
-    //     ctx.status(200),
-    //     ctx.json({
-    //       messages: 'message deleted'
-    //     }),
-    //   );
-    // }),
+      return res(ctx.status(200), ctx.json({
+        total,
+        todos: data,
+      }));
+    } catch {
+      return res(ctx.status(400), ctx.json({ message: 'no task' }));
+    }
+  }),
 ];

@@ -51,7 +51,9 @@ const Post = () => {
               !e.target.value ? setTitleEmpty(true) : setTitleEmpty(false);
               setTitle(e.target.value)}
             } />
-          <SelectTag SelectedOptions={Tags} setSelectedOptions={setTags} ref={selectTag} />
+          <Styled.Tags>
+            <SelectTag SelectedOptions={Tags} setSelectedOptions={setTags} ref={selectTag} />
+          </Styled.Tags>
           <Button className='add'>Add Todo</Button>
         </Styled.Form>
       </div>
@@ -67,7 +69,6 @@ const Styled = {
     font-size: 16px;
     background-color: #efefef;
   `,
-
   Form: styled.form`
     display: flex;
     justify-content: space-between;
@@ -77,5 +78,8 @@ const Styled = {
     input[type=text]:first-of-type{
       flex: 1;
     }
+  `,
+  Tags: styled.div`
+    width: 320px;
   `,
 }
