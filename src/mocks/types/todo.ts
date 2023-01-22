@@ -13,7 +13,7 @@ export type PutPayload = {
   isCompleted: boolean;
 } & AddPayload;
 
-export type Todo = AddPayload & { id: string; createAt: Date; updateAt: Date; isCompleted: boolean };
+export type Todo = AddPayload & { id: string; createdAt: string; updatedAt: string; isCompleted: boolean };
 
 export type TodoFilters = 'all' | 'active' | 'completed';
 
@@ -21,8 +21,8 @@ export type ResPagingData = {
   total: number;
   todos: Todo[];
   paging: {
-      next: number | undefined;
-      total: number;
+    next: number | undefined;
+    total: number;
   };
 }
 

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
 import { ErrorKey, QueryKey } from '../asset/keys';
 import { ResAllData, Todo } from '../mocks/types/todo';
+import dataFormat from '../util/dateFormat';
 import { deleteTodo, patchTodo } from '../util/fetcher';
 import EditItem from './EditItem';
 import Button from './Styled/Button';
@@ -15,9 +16,13 @@ const Item = (props:
   Todo & { EditMode: [boolean, string]; setEditMode: Dispatch<React.SetStateAction<[boolean, string]>> }
 ) => {
 
-  const { id, isCompleted, title, tags, EditMode, setEditMode } = props;
+  const { id, isCompleted, title, tags, EditMode, createdAt, updatedAt, setEditMode } = props;
   const queryClient = useQueryClient();
   const [IsModalShown, toggleModalShown] = useState<boolean>(false);
+
+  // 날짜 출력용으로 변환
+  const printCreatedAt: string = dataFormat(createdAt);
+  const printUpdatedAt: string = dataFormat(updatedAt);
 
   // 태그 리스트 불러오기
   const { data } = queryClient.getQueryData(QueryKey.TAGS) as {data: ResAllData};
@@ -65,9 +70,14 @@ const Item = (props:
         <>
           <Styled.Item>
             <Checkbox type='checkbox' checked={isCompleted} onChange={handleComplete} />
-            <span>
+            <Styled.Title>
               {title}
-            </span>
+            </Styled.Title>
+            <Styled.Date>
+              <p>Created {printCreatedAt}</p>
+              {printCreatedAt !== printUpdatedAt &&
+                <p>Last Updated {printUpdatedAt}</p>}
+            </Styled.Date>
             <Button className='gray' onClick={() => setEditMode([true, id])}>Edit</Button>
             <Button className='gray' onClick={handleDelete}>Delete</Button>
           </Styled.Item>
@@ -92,9 +102,18 @@ const Styled = {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-
-    span{
-      flex: 1;
+  `,
+  Title: styled.p`
+    flex: 1;
+  `,
+  Date: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    
+    p{
+      font-size: 12px;
+      color: #666;
     }
   `,
 }
