@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from 'react-query';
 import styled from 'styled-components';
+import { QueryKey } from '../asset/keys';
 import useIntersecting from '../hook/useIntersecting';
 import type { Todo, TodoFilters } from '../mocks/types/todo';
 import { getTodos } from '../util/fetcher';
@@ -16,9 +17,14 @@ const List = () => {
   const [ListFilter, setListFilter] = useState<TodoFilters>('all');
 
   // 리스트 불러오기
-  const { data, isSuccess, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery(['todos'], ({ pageParam = 0 }) => getTodos({ pageParam }, ListFilter), {
-    getNextPageParam: (lastPage) => lastPage.data.paging.next,
-  });
+  const { 
+    data, isSuccess, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, refetch
+  } = useInfiniteQuery(
+    [QueryKey.TODOS],
+    ({ pageParam = 0 }) => getTodos({ pageParam }, ListFilter), {
+      getNextPageParam: (lastPage) => lastPage.data.paging.next,
+    }
+  );
 
   // 다음 데이터 호출
   useEffect(() => {

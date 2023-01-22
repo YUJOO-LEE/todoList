@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { ErrorKey } from '../asset/keys';
+import { ErrorKey, QueryKey } from '../asset/keys';
 import { postTodo } from '../util/fetcher';
 import SelectTag from './SelectTag';
 import Button from './Styled/Button';
@@ -20,7 +20,7 @@ const Post = () => {
   // 등록 처리
   const { mutate } = useMutation(postTodo, {
     onSuccess: () => {
-      queryClient.invalidateQueries('todos');
+      queryClient.invalidateQueries(QueryKey.TODOS);
       setTitle('');
       setTags([]);
       selectTag.current?.toggleOptions(false);

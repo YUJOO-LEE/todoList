@@ -1,5 +1,6 @@
 import { useQueryClient } from 'react-query';
 import styled from 'styled-components';
+import { QueryKey } from '../asset/keys';
 import { Todo } from '../mocks/types/todo';
 
 
@@ -7,8 +8,8 @@ const Tages = ({ tags }: { tags: string }) => {
   const tagsArr = tags.split(',');
   const queryClient = useQueryClient();
 
-  // 리스트 불러오기
-  const { data } = queryClient.getQueryData<any>('tags');
+  // 태그 리스트 불러오기
+  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS);
 
   return (
     <Styled.TagList>

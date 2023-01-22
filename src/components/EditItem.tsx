@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, MouseEventHandler, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { ErrorKey } from '../asset/keys';
+import { ErrorKey, QueryKey } from '../asset/keys';
 import { Todo } from '../mocks/types/todo';
 import { putTodo } from '../util/fetcher';
 import SelectTag from './SelectTag';
@@ -24,14 +24,14 @@ const EditItem = ({
   const [IsModalShown, toggleModalShown] = useState<boolean>(false);
   const selectTag = useRef<{ toggleOptions: (v: boolean) => void; }>(null);
 
-  // 리스트 불러오기
-  const { data } = queryClient.getQueryData<any>('tags');
+  // 태그용 리스트 불러오기
+  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS);
 
   // 업데이트 처리
   const { mutate: updateTodo } = useMutation(putTodo, {
     onSuccess: () => {
-      queryClient.invalidateQueries('todos');
-      queryClient.invalidateQueries('tags');
+      queryClient.invalidateQueries(QueryKey.TODOS);
+      queryClient.invalidateQueries(QueryKey.TAGS);
       toggleEditMode(false);
     },
   });

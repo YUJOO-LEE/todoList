@@ -1,7 +1,7 @@
 import { ChangeEventHandler, MouseEventHandler, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import styled from 'styled-components';
-import { ErrorKey } from '../asset/keys';
+import { ErrorKey, QueryKey } from '../asset/keys';
 import { Todo } from '../mocks/types/todo';
 import { deleteTodo, patchTodo } from '../util/fetcher';
 import EditItem from './EditItem';
@@ -18,20 +18,20 @@ const Item = (props: Todo) => {
   const [IsModalShown, toggleModalShown] = useState<boolean>(false);
 
   // 리스트 불러오기
-  const { data } = queryClient.getQueryData<any>('tags');
+  const { data } = queryClient.getQueryData<any>(QueryKey.TAGS);
 
   // 완료 데이터 patch
   const { mutate: toggleCompleted } = useMutation(patchTodo, {
     onSuccess: () => {
-      queryClient.invalidateQueries('todos');
-      queryClient.invalidateQueries('tags');
+      queryClient.invalidateQueries(QueryKey.TODOS);
+      queryClient.invalidateQueries(QueryKey.TAGS);
     },
   });
 
   // 데이터 삭제
   const { mutate: deleteTask } = useMutation(deleteTodo, {
     onSuccess: () => {
-      queryClient.invalidateQueries('todos');
+      queryClient.invalidateQueries(QueryKey.TODOS);
     },
   });
 

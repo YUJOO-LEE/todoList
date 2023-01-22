@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { ChangeEventHandler, Dispatch, forwardRef, SetStateAction, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import { Todo } from '../mocks/types/todo';
+import { QueryKey } from '../asset/keys';
 
 type Props = {
   SelectedOptions: string[], 
@@ -26,7 +27,7 @@ const SelectTag = forwardRef<ImperativeHandle, Props>(({
   )
 
   // 리스트 불러오기
-  const data = queryClient.getQueryData<any>('tags');
+  const data = queryClient.getQueryData<any>(QueryKey.TAGS);
 
   // 체크박스 이벤트
   const OnSelect: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
