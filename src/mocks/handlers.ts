@@ -77,7 +77,7 @@ export const handlers = [
       if (!prevTodo) {
         return res(ctx.status(400), ctx.json({ message: 'No Item' }));
       }
-
+      
       const curDate = new Date().toISOString();
       const todo: Todo = Object.assign(prevTodo, { isCompleted, updatedAt: curDate })
 
@@ -98,11 +98,14 @@ export const handlers = [
       const curData = await todoStore.getTodo(id);
       const { data } = await todoStore.getAllTodos();
   
-      await Promise.all(data.map(async (item: Todo) => {
-        let newTags = item.tags.replace(curData!.id + curData!.title + ',', '');
-        newTags = newTags.replace(curData!.id + curData!.title, '');
-        const todo: Todo = Object.assign(item, { tags: newTags })
-        todoStore.setTodo(item.id, todo);
+      await Promise.all(data
+        .filter(item => item.tags.includes(id))
+        .map(async (item: Todo) => {
+          let newTags = item.tags.replace(curData!.id + curData!.title + ',', '');
+          newTags = item.tags.replace(',' + curData!.id + curData!.title, '');
+          newTags = newTags.replace(curData!.id + curData!.title, '');
+          const todo: Todo = Object.assign(item, { tags: newTags })
+          todoStore.setTodo(item.id, todo);
       }));
   
       await todoStore.removeTodo(id);
