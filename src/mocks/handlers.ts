@@ -15,7 +15,7 @@ export const handlers = [
       const limit = getNumberValueFromURLSearchParams({
         searchParams: req.url.searchParams,
         key: 'limit',
-        defaultValue: 10,
+        defaultValue: 20,
       });
       const filter = req.url.searchParams.get('filter') as TodoFilters || 'all';
       
@@ -77,7 +77,7 @@ export const handlers = [
       if (!prevTodo) {
         return res(ctx.status(400), ctx.json({ message: 'No Item' }));
       }
-      
+
       const curDate = new Date().toISOString();
       const todo: Todo = Object.assign(prevTodo, { isCompleted, updatedAt: curDate })
 
