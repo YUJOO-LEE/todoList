@@ -62,7 +62,7 @@ export const handlers = [
       const curDate = new Date().toISOString();
       const todo: Todo = Object.assign(prevTodo, body, { updatedAt: curDate })
 
-      await todoStore.setTodo(body.id, todo);
+      await todoStore.setTodo(body.id, todo, true);
       return res(ctx.status(201), ctx.json({ todo }));
     } catch {
       return res(ctx.status(400), ctx.json({ message: 'error' }));
@@ -81,7 +81,7 @@ export const handlers = [
       const curDate = new Date().toISOString();
       const todo: Todo = Object.assign(prevTodo, { isCompleted, updatedAt: curDate })
 
-      await todoStore.setTodo(id, todo);
+      await todoStore.setTodo(id, todo, true);
       return res(ctx.status(201), ctx.json({ todo }));
     } catch {
       return res(ctx.status(400), ctx.json({ message: 'error' }));
@@ -101,11 +101,13 @@ export const handlers = [
       await Promise.all(data
         .filter(item => item.tags.includes(id))
         .map(async (item: Todo) => {
-          let newTags = item.tags.replace(curData!.id + curData!.title + ',', '');
-          newTags = item.tags.replace(',' + curData!.id + curData!.title, '');
-          newTags = newTags.replace(curData!.id + curData!.title, '');
-          const todo: Todo = Object.assign(item, { tags: newTags })
-          todoStore.setTodo(item.id, todo);
+          const curTag = curData!.id + curData!.title;
+          let newTags = item.tags.replace(curTag + ',', '');
+          newTags = newTags.replace(',' + curTag, '');
+          newTags = newTags.replace(curTag, '');
+
+          const todo: Todo = Object.assign(item, { tags: newTags });
+          await todoStore.setTodo(item.id, todo);
       }));
   
       await todoStore.removeTodo(id);

@@ -25,9 +25,9 @@ const createStore = () => {
     },
 
     // 데이터 저장
-    async setTodo(id: string, todo: Todo) {
+    async setTodo(id: string, todo: Todo, isEditMode?: boolean) {
       // 완료 해제 시 나를 참조하는 작업이 있다면 같이 완료 해제
-      if (!todo.isCompleted) {
+      if (isEditMode && !todo.isCompleted) {
         await Promise.all(
           (await this.getAllTodos()).data
             .filter((item) => item.tags.includes(id))
