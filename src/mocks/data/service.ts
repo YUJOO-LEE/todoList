@@ -26,12 +26,10 @@ const createStore = () => {
 
     // 데이터 저장
     async setTodo(id: string, todo: Todo) {
-      const keys = await _todoStore.keys();
-
       // 완료 해제 시 나를 참조하는 작업이 있다면 같이 완료 해제
       if (!todo.isCompleted) {
         await Promise.all(
-          (await Promise.all(keys.map((key) => _todoStore.getItem(key))) as Todo[])
+          (await this.getAllTodos()).data
             .filter((item) => item.tags.includes(id))
             .map((item) => {
               const todo: Todo = Object.assign(item, { isCompleted: false });
@@ -57,17 +55,17 @@ const createStore = () => {
 
     // 일부 데이터 반환 (페이징)
     async getTodos(offset: number, limit: number, filter: TodoFilters = 'all') {
-      const keys = await _todoStore.keys();
       const isCompleted = filter === 'completed';
 
-      const allTodos: Todo[] = ((await Promise.all(keys
-        .map((key) => _todoStore.getItem(key))) as Todo[])
+      const allTodos = (await this.getAllTodos()).data
         .filter((v: any) => {
-          return filter === 'all' ? v !== null : (v !== null && v.isCompleted === isCompleted);
-      }));
+          return filter === 'all' 
+            ? v !== null 
+            : (v !== null && v.isCompleted === isCompleted);
+      });
 
       return {
-        data: allTodos.reverse().slice(offset, offset + limit),
+        data: allTodos.slice(offset, offset + limit),
         total: allTodos.length,
       };
     },
@@ -75,7 +73,9 @@ const createStore = () => {
     // 전체 데이터 반환
     async getAllTodos() {
       const keys = await _todoStore.keys();
-      const allTodos: Todo[] = ((await Promise.all(keys.map((key) => _todoStore.getItem(key)))).filter((v: any) =>  v !== null) as Todo[]);
+      const allTodos: Todo[] = ((await Promise.all(keys
+        .map((key) => _todoStore.getItem(key))))
+        .filter((v: any) =>  v !== null) as Todo[]);
 
       return {
         data: allTodos.reverse(),
